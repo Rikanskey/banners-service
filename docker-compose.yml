@@ -1,0 +1,26 @@
+version: '3.9'
+
+services:
+  grain-acceptance:
+    container_name: dep-banners-service
+    build:
+      context: ..
+      dockerfile: ./build/package/dev/Dockerfile
+    ports:
+      - '8080:8080'
+    links:
+      - postgres
+
+  postgres:
+    image: postgres:latest
+    container_name: postgres-container
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=1112
+      - POSTGRES_DB=banners
+    volumes:
+      - ../migration/docker_postgres_init.sql:/docker-entrypoint-initdb.d/create_tables.sql
+      - ../migration/script.sql:/docker-entrypoint-initdb.d/fill_tables.sql
+    ports:
+      - '5432:5432'
+
