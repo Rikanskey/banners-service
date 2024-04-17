@@ -28,10 +28,10 @@ func (h GetUserBannerHandler) Handle(ctx context.Context, query app.GetBannerQue
 	var banner app.Banner
 	var err error
 
-	if actual {
-		banner, err = h.getModel.GetUserBanner(ctx, query.TagId, query.FeatureId)
-	} else {
+	if !actual {
 		banner, err = h.cache.GetUserBanner(query.TagId, query.FeatureId)
+	} else if actual || err != nil {
+		banner, err = h.getModel.GetUserBanner(ctx, query.TagId, query.FeatureId)
 	}
 
 	return banner, errors.Wrapf(err, "banner by tag id and feature id %d", query.FeatureId)
